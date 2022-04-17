@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            if (document.querySelector('#answer1').addEventListener('click', function(){
+                this.style.backgroundColor = "red"
+            })) {
+                
+            }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                    <div>
+                    <p><b>Which artisit famouly cut off his own ear?</b></p>
+                    <button type="submit">Vincent Van Gogh</button>
+                    <button type="submit">Claude Monet</button>
+                    <button type="submit">Salvador Dali</button>
+                    <button type="submit">Pablo Picasso</button>
+                    </div>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <textarea name="textarea" placeholder="Enter answer here" maxlength="1" cols="30" rows="1" ></textarea>
+                <button id = "submitAnswer" type="submit">Check Answer</button>
+            </div>
+        </div>
+    </body>
+</html>

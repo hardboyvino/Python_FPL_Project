@@ -1,0 +1,21 @@
+import pandas as pd
+
+# Read in the Defenders Excel scrapped file
+dataset = pd.read_excel('fpl_goalkeeper.xlsx')
+
+# Fill in any cells that might be blank or NaN
+dataset.fillna(0, inplace=True)
+
+# If the player is in the MidPrice
+dataset['Predict'] = (((dataset['Minutes'])*-0.576) + ((dataset['%%xGI'])*214.814) + ((dataset['xGI'])*-13.424) + ((dataset['Headed Shots'])*-16.714) + ((dataset['Final 3rd Successesful Passes'])*-1.459) + ((dataset['Big Chances Created'])*-81.545) + ((dataset['Saves'])*-4.933) + ((dataset['Yellow Card'])*7.033) + ((dataset['Cleansheet'])*-6.218) + ((dataset['Influence'])*-0.166) + ((dataset['xAtt'])*28.470) + ((dataset['Expected Points'])*1.798) + ((dataset['BPS'])*0.378) + ((dataset['Bonus Points'])*-3.670) + ((dataset['Total Tackles'])*30.120) + ((dataset['Tackles Won'])*-16.808) + ((dataset['Clearances'])*-0.695) + ((dataset['Shots Conceded'])*0.447) + ((dataset['Shots Conceded In Box'])*-0.571) + ((dataset['Shots Conceded OT'])*2.733) + ((dataset['SP'])*0.504) + ((dataset['Headed Shots Conceded'])*0.757) + ((dataset['Successful Passes'])*-1.089) +  ((dataset['%% Successful Passes'])*0.144) + ((dataset['Opposition Half Passes'])*-1.012) + ((dataset['Successful Opposition Half Passes'])*1.818) + ((dataset['Total Touches'])*0.801) + ((dataset['Entries into Final 3rd'])*1.359) + ((dataset['Entries into Box'])*-7.804) + (33.214))
+
+# If the player is a Premium
+dataset.loc[dataset['Price'] >= 6, 'Predict'] = (((dataset['Minutes'])*5.309) + ((dataset['%%GI'])*158.583) + ((dataset['%% Final 3rd Successful'])*0.081) + ((dataset['Big Chances Created'])*306.238) + ((dataset['Expected Assists'])*384.379) + ((dataset['Assists'])*-82.701) + ((dataset['Red Card'])*375.764) + ((dataset['Cleansheet'])*-25.618) + ((dataset['Creativity'])*-2.778) + ((dataset['Influence'])*0.657) + ((dataset['xAtt'])*-259.147) + ((dataset['Expected Points'])*-4.248) + ((dataset['BPS'])*1.157) + ((dataset['Bonus Points'])*-20.856) + ((dataset['Goals Conceded'])*4.37) + ((dataset['Total Tackles'])*10.034) + ((dataset['Tackles Won'])*-44.277) + ((dataset['%% Accurate Tackles'])*0.035) + ((dataset['Clearances'])*-9.225) + ((dataset['Interceptions'])*-4.836) + ((dataset['Shots Conceded'])*3.171) + ((dataset['Shots Conceded In Box'])*-3.037) + ((dataset['Shots Conceded OT'])*-13.368) + ((dataset['SP'])*2.426) + ((dataset['Headed Shots Conceded'])*-1.765) + ((dataset['BC Conceded'])*-4.462) + ((dataset['xGC'])*12.750) + ((dataset['Total Passes'])*-6.616) + ((dataset['Successful Passes'])*5.458) + ((dataset['%% Successful Passes'])*-0.757) + ((dataset['Opposition Half Passes'])*3.591) + ((dataset['Successful Opposition Half Passes'])*-5.609) + ((dataset['Total Touches'])*1.604) - (396.331)) 
+
+# If the player is a Budget Player
+dataset.loc[dataset['Price'] < 5, 'Predict'] = (((dataset['Minutes'])*0.917) + ((dataset['%%xGI'])*-58.426) + ((dataset['%%GI'])*25.556) + ((dataset['xGI'])*12.577) + ((dataset['Shots in Box'])*29.249) + ((dataset['Shots Outside Box'])*20.197) + ((dataset['Expected Goals'])*74.057) + ((dataset['Final 3rd Successesful Passes'])*0.573) + ((dataset['Expected Assists'])*62.765) + ((dataset['Yellow Card'])*-4.171) + ((dataset['Creativity'])*-0.830) + ((dataset['Influence'])*0.286) + ((dataset['xAtt'])*-8.474) + ((dataset['bBPS'])*-0.841) + ((dataset['Points'])*-1.718) + ((dataset['Goals Conceded'])*-1.300) + ((dataset['Total Tackles'])*11.982) + ((dataset['Tackles Won'])*-20.278) + ((dataset['Recovery'])*1.127) + ((dataset['Clearances'])*0.933) + ((dataset['Interceptions'])*-2.959) + ((dataset['Shots Conceded'])*0.309) + ((dataset['Shots Conceded In Box'])*-0.253) + ((dataset['Shots Conceded OT'])*2.314) + ((dataset['SP'])*0.519) + ((dataset['BC Conceded'])*3.762) + ((dataset['xGC'])*-12.709) + ((dataset['Total Passes'])*0.589) + ((dataset['%% Successful Passes'])*0.033) + ((dataset['Successful Opposition Half Passes'])*-0.187) + ((dataset['Total Touches'])*-0.518) + ((dataset['Touches in Box'])*-26.069) - (74.076))
+
+# Export to an Excel file & A General file of only predicitions
+selectList = ['Name', 'Team Name', 'Price', 'Predict']
+dataToWrite = dataset[selectList]
+dataToWrite.to_excel('fpl_goalkeeperNew.xlsx', index=False)

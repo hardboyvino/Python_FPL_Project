@@ -73,6 +73,15 @@ def defender_scrape():
     predict_lookahead = 3 # How many GWs to use in prediction points scrapping
     position = "def"
 
+    # Click on the perApp button
+    driver.find_element(By.ID, "perapp").click()
+
+    # Load all players for whatever option/page we are on
+    Select(driver.find_element(By.ID, "qty")).select_by_value("99999")
+
+    # # Wait for the page to be done loading incase internet is slow
+    time.sleep(10)
+
     # Identify the sliders
     slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
     slider_2 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span')
@@ -97,6 +106,15 @@ def midfielder_scrape():
     gws_to_consider = 2
     predict_lookahead = 3 # How many GWs to use in prediction points scrapping
     position = "mid"
+
+    # Click on the perApp button
+    driver.find_element(By.ID, "perapp").click()
+
+    # Load all players for whatever option/page we are on
+    Select(driver.find_element(By.ID, "qty")).select_by_value("99999")
+
+    # # Wait for the page to be done loading incase internet is slow
+    time.sleep(10)
 
     # Identify the sliders
     slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
@@ -123,6 +141,15 @@ def forward_scrape():
     predict_lookahead = 3 # How many GWs to use in prediction points scrapping
     position = "fwd"
 
+    # Click on the perApp button
+    driver.find_element(By.ID, "perapp").click()
+
+    # Load all players for whatever option/page we are on
+    Select(driver.find_element(By.ID, "qty")).select_by_value("99999")
+
+    # # Wait for the page to be done loading incase internet is slow
+    time.sleep(10)
+    
     # Identify the sliders
     slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
     slider_2 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span')

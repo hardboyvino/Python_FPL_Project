@@ -12,12 +12,41 @@ opt.add_experimental_option("debuggerAddress", "localhost:1991")
 driver = webdriver.Chrome("C:\Program Files (x86)\chromedriver.exe",options = opt)
 
 def main():
+    position = input("Which position to scrape(gk, def, mid or fwd): ")
+
+
+    if position == "gk":
+        goalkeeper_scrape()
+
+    elif position == "def":
+        defender_scrape()
+
+    elif position == "mid":
+        midfielder_scrape()
+
+    elif position == "fwd":
+        forward_scrape()
+
+    else:
+        print("Pick a valid option")
+
+def goalkeeper_scrape():
     # Get the pixels of the slider per GW
     slider_width = int(input("What is the width of the slider: "))
     total_gw = int(input("How many GWs so far: "))
     pixels_per_gw = slider_width / (total_gw - 1)
     gws_to_consider = 2
     predict_lookahead = 3 # How many GWs to use in prediction points scrapping
+    position = "gk"
+
+    # Click on the perApp button
+    driver.find_element(By.ID, "perapp").click()
+
+    # Load all players for whatever option/page we are on
+    Select(driver.find_element(By.ID, "qty")).select_by_value("99999")
+
+    # # Wait for the page to be done loading incase internet is slow
+    time.sleep(10)
 
     # Identify the sliders
     slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
@@ -33,12 +62,88 @@ def main():
     time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
     ActionChains(driver).drag_and_drop_by_offset(slider_2, (gws_to_consider * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
     time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
-    move_slider(slider_1, slider_2, pixels_per_gw, gws_to_consider, predict_lookahead)
+    move_slider(slider_1, slider_2, pixels_per_gw, predict_lookahead, position)
 
-def move_slider(slide1, slide2, pixels, gw, predict):
+def defender_scrape():
+    # Get the pixels of the slider per GW
+    slider_width = int(input("What is the width of the slider: "))
+    total_gw = int(input("How many GWs so far: "))
+    pixels_per_gw = slider_width / (total_gw - 1)
+    gws_to_consider = 2
+    predict_lookahead = 3 # How many GWs to use in prediction points scrapping
+    position = "def"
+
+    # Identify the sliders
+    slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
+    slider_2 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span')
+
+    # Get the current GW
+    current_gw = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span/span/span').text
+
+    # Reset the sliders. Lower limit to GW1 and Upper slider to last GW
+    ActionChains(driver).drag_and_drop_by_offset(slider_1, -500, 0).perform()
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, -500, 0).perform() # First reset upper limit to GW1
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, (gws_to_consider * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    move_slider(slider_1, slider_2, pixels_per_gw, predict_lookahead, position)
+
+def midfielder_scrape():
+    # Get the pixels of the slider per GW
+    slider_width = int(input("What is the width of the slider: "))
+    total_gw = int(input("How many GWs so far: "))
+    pixels_per_gw = slider_width / (total_gw - 1)
+    gws_to_consider = 2
+    predict_lookahead = 3 # How many GWs to use in prediction points scrapping
+    position = "mid"
+
+    # Identify the sliders
+    slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
+    slider_2 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span')
+
+    # Get the current GW
+    current_gw = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span/span/span').text
+
+    # Reset the sliders. Lower limit to GW1 and Upper slider to last GW
+    ActionChains(driver).drag_and_drop_by_offset(slider_1, -500, 0).perform()
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, -500, 0).perform() # First reset upper limit to GW1
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, (gws_to_consider * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    move_slider(slider_1, slider_2, pixels_per_gw, predict_lookahead, position)
+
+def forward_scrape():
+    # Get the pixels of the slider per GW
+    slider_width = int(input("What is the width of the slider: "))
+    total_gw = int(input("How many GWs so far: "))
+    pixels_per_gw = slider_width / (total_gw - 1)
+    gws_to_consider = 2
+    predict_lookahead = 3 # How many GWs to use in prediction points scrapping
+    position = "fwd"
+
+    # Identify the sliders
+    slider_1 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[3]/span')
+    slider_2 = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span')
+
+    # Get the current GW
+    current_gw = driver.find_element(by=By.XPATH, value='//*[@id="__next"]//div[2]/div[2]/span/span[4]/span/span/span').text
+
+    # Reset the sliders. Lower limit to GW1 and Upper slider to last GW
+    ActionChains(driver).drag_and_drop_by_offset(slider_1, -500, 0).perform()
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, -500, 0).perform() # First reset upper limit to GW1
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    ActionChains(driver).drag_and_drop_by_offset(slider_2, (gws_to_consider * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
+    time.sleep(5) # Because FFHub website is slow as balls for both sliders to move together
+    move_slider(slider_1, slider_2, pixels_per_gw, predict_lookahead, position)
+
+
+def move_slider(slide1, slide2, pixels, predict, position):
     current_gw = "1" # Initialise to 1
 
-    while current_gw < "5":
+    while current_gw < "33":
         # Get Key Stats Page
         stat_type = driver.find_element(by=By.XPATH, value='//*[@id="stattype"]/option[1]').click()
 
@@ -133,8 +238,6 @@ def move_slider(slide1, slide2, pixels, gw, predict):
         ActionChains(driver).drag_and_drop_by_offset(slide2, -(pixels * predict), 0).perform()
         time.sleep(5)
 
-
-
         # Turn the fpl_data into Panda DataFrame
         data = pd.DataFrame(fpl_data)
         data2 = pd.DataFrame(fpl_data2)
@@ -145,11 +248,18 @@ def move_slider(slide1, slide2, pixels, gw, predict):
         # Fill all blanks in the dataframe with zeros so the results don't return NaN
         dataAll.fillna(0, inplace=True)
 
-        # Print out the data in the terminal
-        print(dataAll)
-
         # Turn the panda into an excel file
-        dataAll.to_excel('testing.xlsx', index = False)
+        if position == "gk":
+            dataAll.to_excel('fpl_goalkeeper.xlsx', index = False)
+
+        elif position == "def":
+            dataAll.to_excel('fpl_defenders.xlsx', index = False)
+
+        elif position == "mid":
+            dataAll.to_excel('fpl_midfielders.xlsx', index = False)
+
+        elif position == "fwd":
+            dataAll.to_excel('fpl_forward.xlsx', index = False)
 
 
         # Get the current GW for while loop
@@ -161,8 +271,6 @@ def move_slider(slide1, slide2, pixels, gw, predict):
         time.sleep(5)
         ActionChains(driver).drag_and_drop_by_offset(slide1, pixels, 0).perform()
         time.sleep(5)
-
-
 
 
 main()

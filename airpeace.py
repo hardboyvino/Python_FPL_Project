@@ -1,5 +1,9 @@
 # How to start a new debugger Chrome browser in cmd - start chrome.exe --remote-debugging-port=1991 --user-data-dir="C:\Users\Adeniyi Babalola\Desktop\PythonPrograms\chromedata"
 
+# Dana Air Full Schedule - https://secure.flydanaair.com/Sched/schedule_popup.asp
+
+# https://booking.flyairpeace.com/VARS/Public/b/FlightCal.aspx?VarsSessionID=d2b673d9-2956-4311-964e-16a03ad6f7a0
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options

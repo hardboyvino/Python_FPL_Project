@@ -394,7 +394,7 @@ print(dataAll)
 
 # Turn the panda into an excel file
 # Comment out the ones not needed for this scrapping
-# dataAll.to_excel('fpl_goalkeeper.xlsx', index = False)
+dataAll.to_excel('fpl_goalkeeper.xlsx', index = False)
 # dataAll.to_excel('fpl_defenders.xlsx', index = False)
 # dataAll.to_excel('fpl_midfielders.xlsx', index = False)
-dataAll.to_excel('fpl_forward.xlsx', index = False)
+# dataAll.to_excel('fpl_forward.xlsx', index = False)

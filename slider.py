@@ -1,3 +1,6 @@
+# How to start a new debugger Chrome browser in cmd - start chrome.exe --remote-debugging-port=1991 --user-data-dir="C:\Users\Adeniyi Babalola\Desktop\PythonPrograms\chromedata"
+
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -13,7 +16,6 @@ driver = webdriver.Chrome("C:\Program Files (x86)\chromedriver.exe",options = op
 
 def main():
     position = input("Which position to scrape(gk, def, mid or fwd): ")
-
 
     if position == "gk":
         goalkeeper_scrape()
@@ -170,68 +172,11 @@ def forward_scrape():
 def move_slider(slide1, slide2, pixels, predict, position):
     current_gw = "1" # Initialise to 1
 
-    while current_gw < "33":
-        # Get Key Stats Page
-        stat_type = driver.find_element(by=By.XPATH, value='//*[@id="stattype"]/option[1]').click()
+    while current_gw < "34":
+        # Get all the rows for Custom Stats
+        header_names = driver.find_elements(By.XPATH, value='//table/thead/tr/th/span')
 
-        time.sleep(10)
-
-        # Get all the rows for Key Stats
-        playerNames = driver.find_elements(by=By.XPATH, value='//tbody/tr/td/div/a')
-        playerTeams = driver.find_elements(by=By.XPATH, value='//tbody/tr/td/div/div/span')
-        playerPrice = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[2]')
-        playerAppearances = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[3]')
-        playerMinutes = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[4]')
-        playerShot = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[5]')
-        playerOT = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[6]')
-        playerIn = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[7]')
-        playerBC = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[8]')
-        playerxG = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[9]')
-        playerG = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[10]')
-        playerPercentxGI = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[11]')
-        playerPercentGI = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[12]')
-        playerxGI = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[13]')
-        playerGI = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[14]')
-        playerKP = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[15]')
-        playerBCC = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[16]')
-        playerxAssist = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[17]')
-        playerAssists = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[18]')
-        playerxPts = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[19]')
-        playerBPS = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[20]')
-        playerB = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[21]')
-        playerPts = driver.find_elements(by=By.XPATH, value='//tbody/tr/td[22]')
-
-        # Create the fpl_data dictionary
-        fpl_data = []
-
-        # For the length of all the players available, put them in the fpl_data dictionary. But I have realised you can run calculations straight from here as well which is AMAZING!!!
-        for i in range(len(playerNames)):
-            temp_data = {
-                        'Name': playerNames[i].text,
-                        'Team Name': playerTeams[i].text,
-                        'Price': float(playerPrice[i].text.replace("£","")),
-                        'Minutes': float(playerMinutes[i].text),
-                        'Appearances': playerAppearances[i].text,
-                        'Shots': float(playerShot[i].text),
-                        'On Target': float(playerOT[i].text),
-                        'Shots in Box': float(playerIn[i].text),
-                        'Big Chances': float(playerBC[i].text),
-                        'Expected Goals': float(playerxG[i].text),
-                        'Goals': float(playerG[i].text),
-                        '%%xGI': (float(playerPercentxGI[i].text.replace("%",''))) / 100,
-                        '%%GI': (float(playerPercentGI[i].text.replace("%",''))) / 100,
-                        'xGI': float(playerxGI[i].text),
-                        'Goal Involvement': float(playerGI[i].text),
-                        'Key Passes': float(playerKP[i].text),
-                        'Big Chances Created': float(playerBCC[i].text),
-                        'Expected Assists': float(playerxAssist[i].text),
-                        'Assists': float(playerAssists[i].text),
-                        'Expected Points': float(playerxPts[i].text),
-                        'BPS': float(playerBPS[i].text),
-                        'Bonus Points': float(playerB[i].text),
-                        'Points': float(playerPts[i].text)
-            }
-            fpl_data.append(temp_data)
+        column_count = len(header_names) # Get the number of columns in the table
 
         time.sleep(10)
 

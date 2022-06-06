@@ -15,6 +15,7 @@ new_df = pd.DataFrame(combo)
 # Fill empty cells with NaN
 new_df.replace("", np.nan, inplace=True)
 
+# Remove all rows that contain NaN
 for i in range(6):
     new_df.dropna(subset=[i], inplace=True)
 

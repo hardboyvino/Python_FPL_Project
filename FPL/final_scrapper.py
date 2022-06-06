@@ -20,13 +20,15 @@ def main():
     wait = WebDriverWait(driver, 10)
 
     url = "https://www.fantasyfootballhub.co.uk/opta"
+    slider_1 = driver.find_element(By.XPATH, "(//span)[18]")
+    slider_2 = driver.find_element(By.XPATH, "(//span)[22]")
 
-    click_per90(driver)
+    click_per_start(driver)
     
-    move_sliders_and_scrape(driver)
+    move_sliders_and_scrape(driver, slider_1, slider_2)
 
 
-def move_sliders_and_scrape(driver):
+def move_sliders_and_scrape(driver, slider_1, slider_2):
     SLIDER_WIDTH = 565
     TOTAL_GWS = 38
     PREDICTION_RANGE = 3
@@ -34,18 +36,15 @@ def move_sliders_and_scrape(driver):
 
     pixels_per_gw = SLIDER_WIDTH / (TOTAL_GWS - 1)
     gws_to_consider = 4
-    slider_1 = driver.find_element(By.XPATH, "(//span)[18]")
-    slider_2 = driver.find_element(By.XPATH, "(//span)[22]")
 
-    # Reset the sliders. Lower slider and Upper slider to GW1
+   # Reset the sliders. Lower slider and Upper slider to GW1
     ActionChains(driver).drag_and_drop_by_offset(slider_1, -SLIDER_WIDTH, 0).perform()
-    random_sleeps()
+    short_sleep()
     ActionChains(driver).drag_and_drop_by_offset(slider_2, -SLIDER_WIDTH, 0).perform() 
-    random_sleeps()
+    short_sleep()
 
     # Move upper slider to prediction GW
     ActionChains(driver).drag_and_drop_by_offset(slider_2, ((gws_to_consider - 1) * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
-    
     random_sleeps()
 
     which_gw_are_we_on = 1 # Initialise to 1
@@ -54,12 +53,12 @@ def move_sliders_and_scrape(driver):
         data = scrape_players(driver)
         print("Getting the main player data...")
         
-        random_sleeps()
+        short_sleep()
 
         # Move the sliders forward for the predict scrapping
         # Upper slider by PREDICTION RANGE and lower slider by GWs being considered
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw * gws_to_consider), 0).perform()
         random_sleeps()
 
@@ -82,23 +81,24 @@ def move_sliders_and_scrape(driver):
 
         data_all.to_excel(f"Players with Predicted Points Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
-        random_sleeps()
+        short_sleep()
 
-        append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+        # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+        data_all.to_csv("hello.csv", mode="a", index=False, header=False)
 
-        random_sleeps()
+        short_sleep()
 
         # Return sliders to position before prediction moved the slider
         ActionChains(driver).drag_and_drop_by_offset(slider_1, -(pixels_per_gw * gws_to_consider), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_2, -(pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        random_sleeps()
+        short_sleep()
 
         # Move the sliders by 1 GW each so the scraping process can be rinsed and repeated
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw), 0).perform()
-        random_sleeps()
+        short_sleep()
 
 def scrape_players_and_teams(driver, wait):
 
@@ -348,7 +348,10 @@ def select_gk_position(driver):
     random_sleeps()
 
 def random_sleeps():
-    sleep(randint(10, 13))
+    sleep(randint(15, 20))
+
+def short_sleep():
+    sleep(randint(3, 6))
 
 def season_202122(driver, wait):
     click_seasons_box(driver)

@@ -37,7 +37,8 @@ def main():
             data = pd.read_excel(file)
             
             # Append the dataframe contents into the spreadsheet
-            append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data, index=False, header = None)
+            # append_df_to_excel('202122 FWD Per App 2 GW - Copy.xlsx', data, index=False, header = None)
+            data.to_csv("hello.csv", mode="a", index=False, header=False)
 
 
 def random_sleeps():

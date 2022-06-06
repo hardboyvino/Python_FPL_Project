@@ -36,9 +36,9 @@ def main():
 def move_sliders_and_scrape(driver, SLIDER_WIDTH, PREDICTION_RANGE, MAX, pixels_per_gw, gws_to_consider, slider_1, slider_2):
     # Reset the sliders. Lower slider and Upper slider to GW1
     ActionChains(driver).drag_and_drop_by_offset(slider_1, -SLIDER_WIDTH, 0).perform()
-    random_sleeps()
+    short_sleep()
     ActionChains(driver).drag_and_drop_by_offset(slider_2, -SLIDER_WIDTH, 0).perform() 
-    random_sleeps()
+    short_sleep()
 
     # Move upper slider to prediction GW
     ActionChains(driver).drag_and_drop_by_offset(slider_2, ((gws_to_consider - 1) * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
@@ -48,22 +48,22 @@ def move_sliders_and_scrape(driver, SLIDER_WIDTH, PREDICTION_RANGE, MAX, pixels_
 
     while which_gw_are_we_on < MAX:
         data = scrape_players(driver)
-        print(data)
+        print("Getting the main player data...")
         
-        random_sleeps()
+        short_sleep()
 
         # Move the sliders forward for the predict scrapping
         # Upper slider by PREDICTION RANGE and lower slider by GWs being considered
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw * gws_to_consider), 0).perform()
         random_sleeps()
 
         which_gw_are_we_on = int(slider_2.text)
-        print(which_gw_are_we_on)
+        print(f"We are on GW {which_gw_are_we_on}")
 
         prediction = scrape_players_predict(driver)
-        print(prediction)
+        print("Getting prediction data...")
 
         # Merge all the dataFrames using the Name column to match the data across dataFrames 
         data_all = data.merge(prediction, how='left', on='Names')
@@ -77,30 +77,34 @@ def move_sliders_and_scrape(driver, SLIDER_WIDTH, PREDICTION_RANGE, MAX, pixels_
         # Remove all rows that contain NaN
         data_all.dropna(subset=["Points_y"], inplace=True)
 
-        print(data_all)
+        print("Merged all the data...")
 
         data_all.to_excel(f"Players with Predicted Points Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
-        random_sleeps()
+        short_sleep()
 
-        append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+        # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+        data_all.to_csv("hello.csv", mode="a", index=False, header=False)
 
-        random_sleeps()
+        short_sleep()
 
         # Return sliders to position before prediction moved the slider
         ActionChains(driver).drag_and_drop_by_offset(slider_1, -(pixels_per_gw * gws_to_consider), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_2, -(pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        random_sleeps()
+        short_sleep()
 
         # Move the sliders by 1 GW each so the scraping process can be rinsed and repeated
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw), 0).perform()
-        random_sleeps()
+        short_sleep()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw), 0).perform()
-        random_sleeps()
+        short_sleep()
 
 def random_sleeps():
     sleep(randint(10, 13))
+
+def short_sleep():
+    sleep(randint(3, 6))
 
 def scrape_players(driver):
     # Read the page source 

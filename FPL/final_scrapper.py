@@ -16,32 +16,21 @@ def main():
     # Page is preopened with OPTA Page loaded
     chrome_options = ChromeOptions()
     chrome_options.add_experimental_option("debuggerAddress", "localhost:1991")
-    driver = webdriver.Chrome(options=chrome_options)
-    wait = WebDriverWait(driver, 10)
-
-    url = "https://www.fantasyfootballhub.co.uk/opta"
-    slider_1 = driver.find_element(By.XPATH, "(//span)[18]")
-    slider_2 = driver.find_element(By.XPATH, "(//span)[22]")
-
-    click_per_start(driver)
-    
-    move_sliders_and_scrape(driver, slider_1, slider_2)
 
 
-def move_sliders_and_scrape(driver, slider_1, slider_2):
+
+def move_sliders_and_scrape(driver, slider_1, slider_2, filename, gws_to_consider):
     SLIDER_WIDTH = 565
-    TOTAL_GWS = 38
     PREDICTION_RANGE = 3
     MAX = 8 # Which GW should the program stop scraping
 
-    pixels_per_gw = SLIDER_WIDTH / (TOTAL_GWS - 1)
-    gws_to_consider = 4
+    pixels_per_gw = 15.27027
 
    # Reset the sliders. Lower slider and Upper slider to GW1
     ActionChains(driver).drag_and_drop_by_offset(slider_1, -SLIDER_WIDTH, 0).perform()
     short_sleep()
     ActionChains(driver).drag_and_drop_by_offset(slider_2, -SLIDER_WIDTH, 0).perform() 
-    short_sleep()
+    random_sleeps()
 
     # Move upper slider to prediction GW
     ActionChains(driver).drag_and_drop_by_offset(slider_2, ((gws_to_consider - 1) * pixels_per_gw), 0).perform() # Then move the upper limit to GW3
@@ -58,7 +47,7 @@ def move_sliders_and_scrape(driver, slider_1, slider_2):
         # Move the sliders forward for the predict scrapping
         # Upper slider by PREDICTION RANGE and lower slider by GWs being considered
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        short_sleep()
+        random_sleeps()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw * gws_to_consider), 0).perform()
         random_sleeps()
 
@@ -79,12 +68,12 @@ def move_sliders_and_scrape(driver, slider_1, slider_2):
 
         print("Merged all the data...")
 
-        data_all.to_excel(f"Players with Predicted Points Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
+        # data_all.to_excel(f"Players with Predicted Points Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
         short_sleep()
 
         # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
-        data_all.to_csv("hello.csv", mode="a", index=False, header=False)
+        data_all.to_csv(filename, mode="a", index=False, header=False)
 
         short_sleep()
 
@@ -96,9 +85,9 @@ def move_sliders_and_scrape(driver, slider_1, slider_2):
 
         # Move the sliders by 1 GW each so the scraping process can be rinsed and repeated
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw), 0).perform()
-        short_sleep()
+        random_sleeps()
         ActionChains(driver).drag_and_drop_by_offset(slider_1, (pixels_per_gw), 0).perform()
-        short_sleep()
+        random_sleeps()
 
 def scrape_players_and_teams(driver, wait):
 
@@ -193,6 +182,9 @@ def scrape_players(driver):
     data = data.replace(regex=["%"], value=[""])
     data = data.replace(regex=["£"], value=[""])
 
+    # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+    data.to_csv("scrape_player.csv", mode="a", index=False, header=False)
+
     # data.to_excel(f"Players Only Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
     return data
@@ -211,8 +203,11 @@ def scrape_players_predict(driver):
     # Has to be done in 2 different batches
     data_predict[["Names", "Position"]] = data_predict["Name"].str.split("(", expand=True)
 
+    # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
+    data_predict.to_csv("scrape_player_predict.csv", mode="a", index=False, header=False)
+
     # Drop all columns except Names and Points
-    data_predict.drop(data_predict.columns.difference(["Names", "Points"]), 1, inplace=True)
+    data_predict.drop(data_predict.columns.difference(["Names", "Points"]), axis = 1, inplace=True)
 
     # data_predict.to_excel(f"Prediction Only Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
@@ -222,7 +217,7 @@ def scrape_players_predict(driver):
 def maximize_window(driver):
     driver.maximize_window()
 
-    random_sleeps()
+    short_sleep()
 
 
 def load_all_players(driver, wait):
@@ -256,13 +251,7 @@ def click_perapp(driver):
 
 def team_data_type(driver, wait):
     # this will click dropdown for data type
-    try: 
-        driver.find_element(
-            By.XPATH, value="//div[contains(text(),'Players')]"
-        ).click()
-
-    except:
-        driver.find_element(By.XPATH, value="//div[contains(text(),'Teams')]").click()  
+    driver.find_element(By.XPATH, value="(//div[contains(@class,'css-seq4h5-control')])[4]").click()
 
     # Click on Player option
     teams = wait.until(
@@ -276,7 +265,7 @@ def team_data_type(driver, wait):
 def player_data_type(driver, wait):
     # this will click dropdown for data type
     driver.find_element(
-        By.XPATH, value="(//div)[132]"
+        By.XPATH, value="(//div[contains(@class,'css-seq4h5-control')])[4]"
     ).click()
 
     # Click on Player option
@@ -300,7 +289,7 @@ def stat_type_custom(driver, wait):
         By.XPATH, value="(//div[contains(@class,'css-seq4h5-control')])[3]"
     ).click()
 
-    random_sleeps()
+    short_sleep()
 
     # Click on Custom option
     custom = wait.until(
@@ -309,7 +298,7 @@ def stat_type_custom(driver, wait):
 
     custom.click()
 
-    random_sleeps()
+    short_sleep()
 
     # Click Save button for the custom selections
     driver.find_element(By.XPATH, value="//button[normalize-space()='Save']").click()
@@ -348,10 +337,10 @@ def select_gk_position(driver):
     random_sleeps()
 
 def random_sleeps():
-    sleep(randint(15, 20))
+    sleep(randint(25, 27))
 
 def short_sleep():
-    sleep(randint(3, 6))
+    sleep(randint(3, 5))
 
 def season_202122(driver, wait):
     click_seasons_box(driver)

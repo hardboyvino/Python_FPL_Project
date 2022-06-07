@@ -7,7 +7,7 @@ df = pd.read_excel("Diff Scrape.xlsx")
 print(df)
 
 # Find the product of every column with each other
-combo = list(product(df["STAT TYPE"], df["DATA TYPE"], df["SEASONS"], df["FIXTURE FILTER"], df["PLAYER FILTER"], df["GW DIFFERENCE"]))
+combo = list(product(df["STAT TYPE"], df["DATA TYPE"], df["SEASONS"], df["FIXTURE FILTER"], df["GW DIFFERENCE"]))
 
 # Turn the list into a dataFrame
 new_df = pd.DataFrame(combo)
@@ -16,9 +16,9 @@ new_df = pd.DataFrame(combo)
 new_df.replace("", np.nan, inplace=True)
 
 # Remove all rows that contain NaN
-for i in range(6):
+for i in range(5):
     new_df.dropna(subset=[i], inplace=True)
 
 
 # Turn the dataFrame into an excel
-new_df.to_excel("Possible Combos.xlsx", index=False)
+new_df.to_excel("Possible Combos V2.xlsx", index=False)

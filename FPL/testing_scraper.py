@@ -84,7 +84,7 @@ def move_sliders_and_scrape(driver, SLIDER_WIDTH, PREDICTION_RANGE, MAX, pixels_
         short_sleep()
 
         # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
-        data_all.to_csv("hello.csv", mode="a", index=False, header=False)
+        data_all.to_csv("blank_sheet.csv", mode="a", index=False, header=False)
 
         short_sleep()
 

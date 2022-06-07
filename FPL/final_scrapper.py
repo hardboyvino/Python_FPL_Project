@@ -1,3 +1,4 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -16,8 +17,6 @@ def main():
     # Page is preopened with OPTA Page loaded
     chrome_options = ChromeOptions()
     chrome_options.add_experimental_option("debuggerAddress", "localhost:1991")
-
-
 
 def move_sliders_and_scrape(driver, slider_1, slider_2, filename, gws_to_consider):
     SLIDER_WIDTH = 565
@@ -182,9 +181,6 @@ def scrape_players(driver):
     data = data.replace(regex=["%"], value=[""])
     data = data.replace(regex=["£"], value=[""])
 
-    # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
-    data.to_csv("scrape_player.csv", mode="a", index=False, header=False)
-
     # data.to_excel(f"Players Only Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
     return data
@@ -202,9 +198,6 @@ def scrape_players_predict(driver):
     # Split the Name column into Name, Position and Team.
     # Has to be done in 2 different batches
     data_predict[["Names", "Position"]] = data_predict["Name"].str.split("(", expand=True)
-
-    # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
-    data_predict.to_csv("scrape_player_predict.csv", mode="a", index=False, header=False)
 
     # Drop all columns except Names and Points
     data_predict.drop(data_predict.columns.difference(["Names", "Points"]), axis = 1, inplace=True)
@@ -340,7 +333,7 @@ def random_sleeps():
     sleep(randint(25, 27))
 
 def short_sleep():
-    sleep(randint(3, 5))
+    sleep(randint(5, 8))
 
 def season_202122(driver, wait):
     click_seasons_box(driver)

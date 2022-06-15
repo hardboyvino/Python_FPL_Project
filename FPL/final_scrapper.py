@@ -1,5 +1,3 @@
-import time
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import pandas as pd
 import numpy as np
-from time import sleep, strftime
+from time import sleep
 from random import randint
 from openpyxl import load_workbook
 import os
@@ -19,15 +17,15 @@ def main():
     chrome_options.add_experimental_option("debuggerAddress", "localhost:1991")
 
 def move_sliders_and_scrape(driver, slider_1, slider_2, filename, gws_to_consider):
-    SLIDER_WIDTH = 565
+    SLIDER_WIDTH = 569
     PREDICTION_RANGE = 3
-    MAX = 8 # Which GW should the program stop scraping
+    MAX = 38 # Which GW should the program stop scraping
 
-    pixels_per_gw = 15.27027
+    pixels_per_gw = 15.37837837837838
 
    # Reset the sliders. Lower slider and Upper slider to GW1
     ActionChains(driver).drag_and_drop_by_offset(slider_1, -SLIDER_WIDTH, 0).perform()
-    short_sleep()
+    random_sleeps()
     ActionChains(driver).drag_and_drop_by_offset(slider_2, -SLIDER_WIDTH, 0).perform() 
     random_sleeps()
 
@@ -41,7 +39,7 @@ def move_sliders_and_scrape(driver, slider_1, slider_2, filename, gws_to_conside
         data = scrape_players(driver)
         print("Getting the main player data...")
         
-        short_sleep()
+        random_sleeps()
 
         # Move the sliders forward for the predict scrapping
         # Upper slider by PREDICTION RANGE and lower slider by GWs being considered
@@ -69,18 +67,18 @@ def move_sliders_and_scrape(driver, slider_1, slider_2, filename, gws_to_conside
 
         # data_all.to_excel(f"Players with Predicted Points Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
-        short_sleep()
+        random_sleeps()
 
         # append_df_to_excel('202122 FWD Per App 2 GW.xlsx', data_all, index=False, header = None)
-        data_all.to_csv(filename, mode="a", index=False, header=False)
+        data_all.to_csv(filename, mode="a", index=False, header=True)
 
-        short_sleep()
+        random_sleeps()
 
         # Return sliders to position before prediction moved the slider
         ActionChains(driver).drag_and_drop_by_offset(slider_1, -(pixels_per_gw * gws_to_consider), 0).perform()
-        short_sleep()
+        random_sleeps()
         ActionChains(driver).drag_and_drop_by_offset(slider_2, -(pixels_per_gw * PREDICTION_RANGE), 0).perform()
-        short_sleep()
+        random_sleeps()
 
         # Move the sliders by 1 GW each so the scraping process can be rinsed and repeated
         ActionChains(driver).drag_and_drop_by_offset(slider_2, (pixels_per_gw), 0).perform()
@@ -163,6 +161,36 @@ def scrape_players_and_teams(driver, wait):
 
 
 def scrape_players(driver):
+    """Converts a team's short name to average finish position."""
+    team_name_to_numbers = {
+        "ARS": 6,
+        "AVL": 15,
+        "BRE": 16,
+        "BHA": 13,
+        "BUR": 15,
+        "BOU": 18,
+        "CAR": 20,
+        "CHE": 3,
+        "CRY": 12,
+        "EVE": 10,
+        "FUL": 20,
+        "HUD": 20,
+        "LEI": 7,
+        "LEE": 15,
+        "LIV": 2,
+        "MCI": 1,
+        "MUN": 4,
+        "NEW": 11,
+        "NOR": 20,
+        "SHU": 17,
+        "SOU": 14,
+        "TOT": 5,
+        "WAT": 17,
+        "WBA": 20,
+        "WHU": 9,
+        "WOL": 8,
+        None : None,
+    }
     # Read the page source 
     html = driver.page_source
 
@@ -180,6 +208,11 @@ def scrape_players(driver):
     # Remove all instances of % and £ in the DataFrame
     data = data.replace(regex=["%"], value=[""])
     data = data.replace(regex=["£"], value=[""])
+
+    # Replace all team short names with numbers so it can be added in the analysis
+    # for word, replacement in team_name_to_numbers.items():
+    #     data = data["Team"].replace(regex=[word], value=[replacement])
+    data["Team"] = data[["Team"]].replace(regex = team_name_to_numbers)
 
     # data.to_excel(f"Players Only Scrape - {strftime('%a %d %b %Y %H %M %S %p')}.xlsx", index=False)
 
@@ -330,7 +363,7 @@ def select_gk_position(driver):
     random_sleeps()
 
 def random_sleeps():
-    sleep(randint(25, 27))
+    sleep(25)
 
 def short_sleep():
     sleep(randint(5, 8))
